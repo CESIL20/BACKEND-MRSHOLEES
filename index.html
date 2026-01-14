@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MR SHOLEES - Chifa Delivery</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.min.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="main-header">
+    <div class="header-left">
+        <img src="img/logomrsholees.png" class="logo">
+        <div>
+            <span>Chifa Delivery • Dark Kitchen</span>
+        </div>
+    </div>
+
+    <div class="header-right">
+        <button id="cartBtn" class="icon-btn">
+            🛒 <span id="cartBadge">0</span>
+        </button>
+
+        <button id="logoutBtn" class="logout-pro hidden">
+            ⎋ Cerrar sesión
+        </button>
+    </div>
+</header>
+
+<!-- ================= CATEGORIAS ================= -->
+<section class="categories">
+    <button class="category-btn active" data-category="populares">🔥 Populares</button>
+    <button class="category-btn" data-category="tallarines">🍜 Tallarines</button>
+    <button class="category-btn" data-category="arroz">🍚 Arroz</button>
+    <button class="category-btn" data-category="bebidas">🥤 Bebidas</button>
+</section>
+
+<!-- ================= MENU ================= -->
+<main class="menu-container">
+    <div id="menuGrid" class="menu-grid"></div>
+</main>
+
+<!-- ================= REGISTRO OVERLAY (APP STYLE) ================= -->
+<div id="registerOverlay" class="register-overlay hidden">
+    <div class="register-modal">
+        <h2>👤 Regístrate para continuar</h2>
+        <p>Necesitamos tus datos para poder enviar tu pedido</p>
+
+        <input type="text" id="regName" placeholder="Nombre completo">
+        <input type="tel" id="regPhone" placeholder="Celular">
+        <input type="text" id="regAddress" placeholder="Dirección exacta">
+
+        <button id="gpsBtn">📍 Usar mi ubicación</button>
+        <button id="registerBtn">Continuar ➜</button>
+    </div>
+</div>
+
+<!-- ================= CARRITO ================= -->
+<div id="cartOverlay" class="cart-overlay">
+    <div class="cart-panel">
+        <div class="cart-header">
+            <h2>🛒 Tu pedido</h2>
+            <button id="closeCart">✖</button>
+        </div>
+
+        <div id="cartItems" class="cart-items"></div>
+
+        <div class="cart-footer">
+    <div class="total-row">
+        <span>Total:</span>
+        <strong id="totalAmount">S/ 0.00</strong>
+    </div>
+
+    <button id="continueBtn" class="continue-btn">
+        ← Seguir comprando
+    </button>
+
+    <button id="checkoutBtn" class="primary-btn full">
+        Enviar pedido por WhatsApp
+    </button>
+</div>
+
+    </div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+    <p>© 2026 MR SHOLEES • Chifa Delivery</p>
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+    const logoutBtn = document.getElementById('logoutBtn');
+    const user = localStorage.getItem('mrsholees_user');
+
+    if (user) {
+        logoutBtn.classList.remove('hidden');
+    }
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('mrsholees_user');
+        localStorage.removeItem('cart');
+        location.reload();
+    });
+</script>
+
+</body>
+</html>
