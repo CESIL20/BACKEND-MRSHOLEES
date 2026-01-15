@@ -69,17 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // ======================
 registerBtn.addEventListener('click', () => {
     const name = document.getElementById('regName').value.trim();
-    const identification=
-document.getElementById('regIdentification').valie.trim();
+    const identification = document.getElementById('regIdentification').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
     const address = document.getElementById('regAddress').value.trim();
 
-    if (!name || !phone || !address) {
+    if (!name || !identification || !phone || !address) {
         alert('Completa todos los datos');
         return;
     }
 
-    const user = { name, phone, address };
+    const user = { name, identification, phone, address };
     localStorage.setItem('mrsholees_user', JSON.stringify(user));
 
     hideRegister();
