@@ -84,7 +84,7 @@ registerBtn.addEventListener('click', () => {
     hideRegister();
 });
 
-// GPS
+// GPS con dirección real
 gpsBtn.addEventListener('click', () => {
     if (!navigator.geolocation) {
         alert('Tu navegador no soporta GPS');
@@ -94,9 +94,23 @@ gpsBtn.addEventListener('click', () => {
     gpsBtn.innerText = 'Obteniendo ubicación...';
 
     navigator.geolocation.getCurrentPosition(
-        pos => {
+        async pos => {
             const { latitude, longitude } = pos.coords;
-            document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+                const data = await response.json();
+
+                if (data && data.display_name) {
+                    document.getElementById('regAddress').value = data.display_name;
+                } else {
+                    document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+                }
+
+            } catch (error) {
+                document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+            }
+
             gpsBtn.innerText = '📍 Usar mi ubicación';
         },
         () => {
@@ -105,14 +119,6 @@ gpsBtn.addEventListener('click', () => {
         }
     );
 });
-
-function showRegister() {
-    registerOverlay.classList.remove('hidden');
-}
-
-function hideRegister() {
-    registerOverlay.classList.add('hidden');
-}
 
 // ======================
 // EVENTS
