@@ -244,7 +244,7 @@ function sendWhatsAppOrder() {
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
     message += `%0A*Total: S/ ${total.toFixed(2)}*`;
 
-    const phoneNumber = '51999999999'; // CAMBIA A TU NUMERO
+    const phoneNumber = '51927743956'; // CAMBIA A TU NUMERO
     const url = `https://wa.me/${phoneNumber}?text=${message}`;
 
     window.open(url, '_blank');
@@ -274,3 +274,4 @@ if (continueBtn) {
         cartOverlay.classList.remove('active');
     });
 }
+
