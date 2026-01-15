@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ======================
 registerBtn.addEventListener('click', () => {
     const name = document.getElementById('regName').value.trim();
-    const identificación=
+    const identification=
 document.getElementById('regIdentification').valie.trim();
     const phone = document.getElementById('regPhone').value.trim();
     const address = document.getElementById('regAddress').value.trim();
