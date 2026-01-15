@@ -20,6 +20,8 @@ const cartItems = document.getElementById('cartItems');
 const totalAmount = document.getElementById('totalAmount');
 const cartBadge = document.getElementById('cartBadge');
 const checkoutBtn = document.getElementById('checkoutBtn');
+const continueBtn = document.getElementById('continueBtn');
+const logoutBtn = document.getElementById('logoutBtn');
 
 // ======================
 // MENU DATA
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (user) {
         hideRegister();
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
     } else {
         showRegister();
     }
@@ -67,58 +70,69 @@ document.addEventListener('DOMContentLoaded', () => {
 // ======================
 // REGISTRO
 // ======================
-registerBtn.addEventListener('click', () => {
-    const name = document.getElementById('regName').value.trim();
-    const identification = document.getElementById('regIdentification').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const address = document.getElementById('regAddress').value.trim();
+if (registerBtn) {
+    registerBtn.addEventListener('click', () => {
+        const name = document.getElementById('regName').value.trim();
+        const identification = document.getElementById('regIdentification').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const address = document.getElementById('regAddress').value.trim();
 
-    if (!name || !identification || !phone || !address) {
-        alert('Completa todos los datos');
-        return;
-    }
-
-    const user = { name, identification, phone, address };
-    localStorage.setItem('mrsholees_user', JSON.stringify(user));
-
-    hideRegister();
-});
-
-// GPS con dirección real
-gpsBtn.addEventListener('click', () => {
-    if (!navigator.geolocation) {
-        alert('Tu navegador no soporta GPS');
-        return;
-    }
-
-    gpsBtn.innerText = 'Obteniendo ubicación...';
-
-    navigator.geolocation.getCurrentPosition(
-        async pos => {
-            const { latitude, longitude } = pos.coords;
-
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-                const data = await response.json();
-
-                if (data && data.display_name) {
-                    document.getElementById('regAddress').value = data.display_name;
-                } else {
-                    document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-                }
-
-            } catch (error) {
-                document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-            }
-
-            gpsBtn.innerText = '📍 Usar mi ubicación';
-        },
-        () => {
-            alert('No se pudo obtener tu ubicación');
-            gpsBtn.innerText = '📍 Usar mi ubicación';
+        if (!name || !identification || !phone || !address) {
+            alert('Completa todos los datos');
+            return;
         }
-    );
-});
+
+        if (!/^\d{8}$/.test(identification)) {
+            alert('El DNI debe tener 8 dígitos');
+            return;
+        }
+
+        const user = { name, identification, phone, address };
+        localStorage.setItem('mrsholees_user', JSON.stringify(user));
+
+        hideRegister();
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
+    });
+}
+
+// ======================
+// GPS
+// ======================
+if (gpsBtn) {
+    gpsBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            alert('Tu navegador no soporta GPS');
+            return;
+        }
+
+        gpsBtn.innerText = 'Obteniendo ubicación...';
+
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const { latitude, longitude } = pos.coords;
+
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            document.getElementById('regAddress').value = data.display_name;
+                        } else {
+                            document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+                        }
+                        gpsBtn.innerText = '📍 Usar mi ubicación';
+                    })
+                    .catch(() => {
+                        document.getElementById('regAddress').value = `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+                        gpsBtn.innerText = '📍 Usar mi ubicación';
+                    });
+            },
+            () => {
+                alert('No se pudo obtener tu ubicación');
+                gpsBtn.innerText = '📍 Usar mi ubicación';
+            }
+        );
+    });
+}
 
 // ======================
 // EVENTS
@@ -133,17 +147,28 @@ function setupEventListeners() {
         });
     });
 
-    cartBtn.addEventListener('click', () => {
-        const user = getUser();
-        if (!user) {
-            showRegister();
-            return;
-        }
-        cartOverlay.classList.add('active');
-    });
+    if (cartBtn) {
+        cartBtn.addEventListener('click', () => {
+            const user = getUser();
+            if (!user) {
+                showRegister();
+                return;
+            }
+            cartOverlay.classList.add('active');
+        });
+    }
 
-    closeCart.addEventListener('click', () => cartOverlay.classList.remove('active'));
-    checkoutBtn.addEventListener('click', sendWhatsAppOrder);
+    if (closeCart) closeCart.addEventListener('click', () => cartOverlay.classList.remove('active'));
+    if (checkoutBtn) checkoutBtn.addEventListener('click', sendWhatsAppOrder);
+    if (continueBtn) continueBtn.addEventListener('click', () => cartOverlay.classList.remove('active'));
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('mrsholees_user');
+            cart = [];
+            location.reload();
+        });
+    }
 }
 
 // ======================
@@ -268,17 +293,10 @@ function getUser() {
     return JSON.parse(localStorage.getItem('mrsholees_user'));
 }
 
-// LOGOUT PRO
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    localStorage.removeItem('mrsholees_user');
-    localStorage.removeItem('cart');
-    location.reload();
-});
-const continueBtn = document.getElementById('continueBtn');
-// close cart overlay
-if (continueBtn) {
-    continueBtn.addEventListener('click', () => {
-        cartOverlay.classList.remove('active');
-    });
+function showRegister() {
+    if (registerOverlay) registerOverlay.classList.remove('hidden');
 }
 
+function hideRegister() {
+    if (registerOverlay) registerOverlay.classList.add('hidden');
+}
