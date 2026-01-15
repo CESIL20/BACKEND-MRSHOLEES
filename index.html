@@ -43,14 +43,14 @@
     <div id="menuGrid" class="menu-grid"></div>
 </main>
 
-<!-- ================= REGISTRO OVERLAY (APP STYLE) ================= -->
+<!-- ================= REGISTRO OVERLAY ================= -->
 <div id="registerOverlay" class="register-overlay hidden">
     <div class="register-modal">
         <h2>👤 Regístrate para continuar</h2>
         <p>Necesitamos tus datos para poder enviar tu pedido</p>
 
         <input type="text" id="regName" placeholder="Nombre completo">
-        <input type="number" id="regIdentification" placeholder="DNI">
+        <input type="number" id="regIdentification" placeholder="DNI" maxlength="8">
         <input type="tel" id="regPhone" placeholder="Celular">
         <input type="text" id="regAddress" placeholder="Dirección exacta">
 
@@ -70,20 +70,19 @@
         <div id="cartItems" class="cart-items"></div>
 
         <div class="cart-footer">
-    <div class="total-row">
-        <span>Total:</span>
-        <strong id="totalAmount">S/ 0.00</strong>
-    </div>
+            <div class="total-row">
+                <span>Total:</span>
+                <strong id="totalAmount">S/ 0.00</strong>
+            </div>
 
-    <button id="continueBtn" class="continue-btn">
-        ← Seguir comprando
-    </button>
+            <button id="continueBtn" class="continue-btn">
+                ← Seguir comprando
+            </button>
 
-    <button id="checkoutBtn" class="primary-btn full">
-        Enviar pedido por WhatsApp
-    </button>
-</div>
-
+            <button id="checkoutBtn" class="primary-btn full">
+                Enviar pedido por WhatsApp
+            </button>
+        </div>
     </div>
 </div>
 
@@ -93,21 +92,6 @@
 </footer>
 
 <script src="script.js"></script>
-
-<script>
-    const logoutBtn = document.getElementById('logoutBtn');
-    const user = localStorage.getItem('mrsholees_user');
-
-    if (user) {
-        logoutBtn.classList.remove('hidden');
-    }
-
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('mrsholees_user');
-        localStorage.removeItem('cart');
-        location.reload();
-    });
-</script>
 
 </body>
 </html>
